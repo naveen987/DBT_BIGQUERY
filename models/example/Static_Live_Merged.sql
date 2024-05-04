@@ -1,4 +1,4 @@
-{{ config(materialized='table', table_name='Static_Live_merged') }}
+{{ config(materialized='table', table_name='Static_Live_Merged') }}
 
 -- First, aggregate data for each dataset
 WITH AggregatedA AS (
