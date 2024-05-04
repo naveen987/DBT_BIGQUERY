@@ -1,21 +1,77 @@
-
 version: 2
 
 models:
-    - name: my_first_dbt_model
-      description: "A starter dbt model"
-      columns:
-          - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+  - name: merged_data
+    description: "This model aggregates data from various static sources into a combined dataset."
+    columns:
+      - name: Ticker
+        description: "The primary key for this table, representing stock ticker symbols from various sources."
+        tests:
+          - unique
+          - not_null
+      - name: Open
+        description: "Opening stock price."
+      - name: Close
+        description: "Closing stock price as of the last trading session."
+      - name: High
+        description: "Highest stock price during the trading session."
+      - name: Low
+        description: "Lowest stock price during the trading session."
+      - name: "Adj-close"
+        description: "Adjusted closing stock price accounting for any corporate actions."
+      - name: Date
+        description: "Date of the stock data record."
+      - name: Volume
+        description: "Volume of stocks traded during the session."
 
-    - name: my_second_dbt_model
-      description: "A starter dbt model"
-      columns:
-          - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+  - name: Stock_data_transformation
+    description: "Transforms live stock data, integrating additional calculations like VWAP."
+    columns:
+      - name: Ticker
+        description: "The primary key for this table, representing stock ticker symbols."
+        tests:
+          - unique
+          - not_null
+      - name: Open
+        description: "Opening price after transformations, potentially adjusted or imputed."
+      - name: Close
+        description: "Closing price after transformations, reflecting end-of-day valuations."
+      - name: High
+        description: "Highest price point reached after any transformations applied."
+      - name: Low
+        description: "Lowest price point recorded, adjusted for any data transformations."
+      - name: Volume
+        description: "Total trading volume after adjustments or corrections."
+      - name: Date
+        description: "Date of data entry, standardized across all records."
+      - name: Number_of_Transactions
+        description: "Total number of transactions recorded for the day."
+      - name: Volume_Weighted_Average_Price
+        description: "Volume-weighted average price calculated for the day's trading."
+
+  - name: static_live_merged
+    description: "Combines static and transformed stock data into a single view for analysis."
+    columns:
+      - name: Ticker
+        description: "Acts as a conceptual primary key across both static and live transformed data sets."
+        tests:
+          - unique
+          - not_null
+      - name: Open
+        description: "Displays opening price; null for transformed data if not applicable."
+      - name: Close
+        description: "Closing stock price, differentiated by source (Static or Transformed)."
+      - name: High
+        description: "High stock price for the day, separated by data source type."
+      - name: Low
+        description: "Low stock price for the day, according to source."
+      - name: "Adj-close"
+        description: "Adjusted closing price available only in static data."
+      - name: Date
+        description: "Date corresponding to each stock record."
+      - name: Volume
+        description: "Trading volume, specified by data source."
+      - name: Number_of_Transactions
+        description: "Number of transactions, typically available only in transformed data."
+      - name: Volume_Weighted_Average_Price
+        description: "Calculated only for transformed data, represents VWAP."
